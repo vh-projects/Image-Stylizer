@@ -1,4 +1,4 @@
-🖼️ AI Image Stylizer
+# 🖼️AI Image Stylizer
 
 Transform your photos into stunning artworks using AI-driven style transfer.
 This project combines a FastAPI backend (for AI image processing) with a React frontend (for a smooth user experience).
