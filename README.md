@@ -29,7 +29,7 @@ Located in: backend/
      * Create virtual environment (optional)
      * `python -m venv venv`
      * `source venv/bin/activate`   # Mac/Linux
-                 # OR
+                 - OR
      * `venv\Scripts\activate`      # Windows
      * Install dependencies
      * `pip install -r requirements.txt`
@@ -45,9 +45,8 @@ Located in: frontend/
 
   2. Setup & Run
      * Move into frontend directory
-     :~ cd frontend
+     * `cd frontend`
      * Install dependencies
-     :~ npm install
+     * `npm install`
      * Start development server
-     :~ npm run dev
- 
+     * `npm run dev`
