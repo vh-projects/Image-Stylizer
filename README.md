@@ -18,10 +18,10 @@ Under the hood, the backend handles image stylization through AI/ML models, and 
 
 Backend (FastAPI)
 Located in: backend/
-  1. Prerequisites
-    * Python 3.9 or later
-    * pip (Python package manager)
-    * virtualenv (optional but recommended)
+  1. Pre-requisites
+     * Python 3.9 or later
+     * pip (Python package manager)
+     * virtualenv (optional but recommended)
 
   3. Setup & Run
      * Move into backend directory
