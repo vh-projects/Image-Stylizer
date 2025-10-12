@@ -17,13 +17,12 @@ Under the hood, the backend handles image stylization through AI/ML models, and 
 ## Installation & Setup
 
 Backend (FastAPI)
-Located in: backend/
   1. Pre-requisites
      * Python 3.9 or later
      * pip (Python package manager)
      * virtualenv (optional but recommended)
 
-  3. Setup & Run
+  2. Setup & Run
      * Move into backend directory
      * `cd backend`
      * Create virtual environment (optional)
@@ -37,10 +36,9 @@ Located in: backend/
 
 
 Frontend (React)
-Located in: frontend/
   1. Prerequisites
-    * Node.js (v18+ recommended)
-    * npm (comes with Node)
+     * Node.js (v18+ recommended)
+     * npm (comes with Node)
 
   2. Setup & Run
      * Move into frontend directory
