@@ -23,7 +23,7 @@ Located in: backend/
     * pip (Python package manager)
     * virtualenv (optional but recommended)
 
-  2. Setup & Run
+  3. Setup & Run
      * Move into backend directory
      * `cd backend`
      * Create virtual environment (optional)
