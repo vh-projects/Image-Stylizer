@@ -25,16 +25,16 @@ Located in: backend/
 
   2. Setup & Run
      * Move into backend directory
-    :~ cd backend
+     * `cd backend`
      * Create virtual environment (optional)
-    :~ python -m venv venv
-     :~ source venv/bin/activate        # Mac/Linux
-                 #OR
-     :~ venv\Scripts\activate           # Windows
+     * `python -m venv venv`
+     * `source venv/bin/activate`   # Mac/Linux
+                 # OR
+     * `venv\Scripts\activate`      # Windows
      * Install dependencies
-    :~ pip install -r requirements.txt
+     * `pip install -r requirements.txt`
     - Run FastAPI server
-    :~ uvicorn app:app --reload
+     * `uvicorn app:app --reload`
 
 
 Frontend (React)
