@@ -19,19 +19,19 @@ Under the hood, the backend handles image stylization through AI/ML models, and 
 Backend (FastAPI)
 Located in: backend/
   1. Prerequisites
-    - Python 3.9 or later
-    - pip (Python package manager)
-    - virtualenv (optional but recommended)
+    * Python 3.9 or later
+    * pip (Python package manager)
+    * virtualenv (optional but recommended)
 
   2. Setup & Run
-    - Move into backend directory
+     * Move into backend directory
     :~ cd backend
-    - Create virtual environment (optional)
+     * Create virtual environment (optional)
     :~ python -m venv venv
      :~ source venv/bin/activate        # Mac/Linux
                  #OR
      :~ venv\Scripts\activate           # Windows
-    - Install dependencies
+     * Install dependencies
     :~ pip install -r requirements.txt
     - Run FastAPI server
     :~ uvicorn app:app --reload
@@ -40,14 +40,14 @@ Located in: backend/
 Frontend (React)
 Located in: frontend/
   1. Prerequisites
-    - Node.js (v18+ recommended)
-    - npm (comes with Node)
+    * Node.js (v18+ recommended)
+    * npm (comes with Node)
 
   2. Setup & Run
-    - Move into frontend directory
+     * Move into frontend directory
      :~ cd frontend
-    - Install dependencies
+     * Install dependencies
      :~ npm install
-    - Start development server
+     * Start development server
      :~ npm run dev
  
