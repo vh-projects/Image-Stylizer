@@ -1,0 +1,26 @@
+{
+  "human-face": {
+    "van-gogh": "./models/van-gogh-humans-epoch15.pth",
+    "claude-monet": "./models/claude-monet-humans-epoch10.pth"
+  },
+
+  "cars": {
+    "van-gogh": "./models/car-van-gogh-gpt_edgeAMP_epoch25.pth",
+    "claude-monet": "./models/car-claude-monet-gpt_edgeAMP_epoch12.pth"
+  },
+
+  "cats": {
+    "van-gogh": "./models/cats-van-gogh-gpt_edgeAMP_epoch12.pth",
+    "claude-monet": "./models/cat-claude-monet-gpt_edgeAMP_epoch12.pth"    
+  },
+
+  "dogs": {
+    "van-gogh": "./models/dog-van-gogh-gpt_edgeAMP_epoch12.pth",
+    "claude-monet": "./models/dog-claude-monet-gpt_edgeAMP_epoch12.pth"    
+  },
+
+  "landscape": {
+    "van-gogh": "./models/landscape-van-gogh-gpt_edgeAMP_epoch30.pth",
+    "claude-monet": "./models/landscape-claude-monet-gpt_edgeAMP_epoch30.pth"
+  }
+}
