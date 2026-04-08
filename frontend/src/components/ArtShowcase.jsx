@@ -1,293 +1,140 @@
-// "use client";
-
-// import { useState, useEffect } from "react";
-// import { motion, AnimatePresence } from "framer-motion";
-// import { Button } from "@heroui/react";
-
-// const artworks = [
-//   {
-//     artist: "Vincent van Gogh",
-//     title: "Starry Night",
-//     year: "1889",
-//     location: "MoMA, New York",
-//     img: "/art-images/art-image1.jpg",
-//     description:
-//       "One of the most recognized paintings in the world, capturing the swirling night sky over Saint-Rémy.",
-//   },
-//   {
-//     artist: "Leonardo da Vinci",
-//     title: "Mona Lisa",
-//     year: "1503",
-//     location: "Louvre, Paris",
-//     img: "/art-images/art-image4.jpg",
-//     description:
-//       "Famous for her enigmatic smile, the Mona Lisa is a masterpiece of Renaissance portrait art.",
-//   },
-//   {
-//     artist: "Claude Monet",
-//     title: "Water Lilies",
-//     year: "1916",
-//     location: "Musée de l'Orangerie, Paris",
-//     img: "/art-images/art-image2.jpg",
-//     description:
-//       "Part of Monet’s large series, Water Lilies represents his fascination with light and nature.",
-//   },
-//   {
-//     artist: "Edvard Munch",
-//     title: "The Scream",
-//     year: "1893",
-//     location: "National Gallery, Oslo",
-//     img: "/art-images/art-image3.jpg",
-//     description:
-//       "An iconic symbol of human anxiety and existential dread, painted with bold expressionist strokes.",
-//   },
-// ];
-
-// const ArtShowcase = () => {
-//   const [openIndex, setOpenIndex] = useState(null);
-
-//   // Close details on Escape key
-//   useEffect(() => {
-//     const handleEsc = (e) => {
-//       if (e.key === "Escape") setOpenIndex(null);
-//     };
-//     window.addEventListener("keydown", handleEsc);
-//     return () => window.removeEventListener("keydown", handleEsc);
-//   }, []);
-
-//   return (
-//     <div className="max-w-7xl mx-auto px-6 py-20 space-y-16">
-//       {artworks.map((art, index) => {
-//         const isOpen = openIndex === index;
-//         const reversed = index % 2 === 1;
-
-//         return (
-//           <motion.div
-//             key={index}
-//             initial={{ opacity: 0, y: 40 }}
-//             whileInView={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.6 }}
-//             viewport={{ once: true }}
-//             className="relative"
-//           >
-//             <div
-//               className={`flex flex-col md:flex-row ${
-//                 reversed ? "md:flex-row-reverse" : ""
-//               } bg-gradient-to-br from-gray-900/60 to-black/70 rounded-3xl overflow-hidden border border-white/10 shadow-[0_10px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl`}
-//             >
-//               {/* Image Section */}
-//               <motion.div
-//                 whileHover={{ scale: 1.02, rotateY: reversed ? -5 : 5 }}
-//                 transition={{ type: "spring", stiffness: 120, damping: 14 }}
-//                 className="md:w-1/2 relative overflow-hidden"
-//               >
-//                 <img
-//                   src={art.img}
-//                   alt={art.title}
-//                   className="w-full h-[400px] object-cover transform transition-all duration-700 hover:scale-105"
-//                   draggable="false"
-//                 />
-//                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-//                 <p className="absolute bottom-4 left-4 bg-white/10 px-3 py-1 rounded-full text-sm text-gray-200 border border-white/20 backdrop-blur-md">
-//                   {art.year}
-//                 </p>
-//               </motion.div>
-
-//               {/* Info Section */}
-//               <div className="md:w-1/2 p-8 flex flex-col justify-center">
-//                 <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-md">
-//                   {art.title} <span className="text-gray-400 text-xl">({art.year})</span>
-//                 </h2>
-
-//                 <div className="mt-6">
-//                   <Button
-//                     onClick={() => setOpenIndex(isOpen ? null : index)}
-//                     className="bg-white/10 hover:bg-white/20 text-white rounded-full px-5 py-2 transition-all"
-//                   >
-//                     {isOpen ? "Hide details" : "View details"}
-//                   </Button>
-//                 </div>
-
-//                 <AnimatePresence>
-//                   {isOpen && (
-//                     <motion.div
-//                       initial={{ opacity: 0, height: 0 }}
-//                       animate={{ opacity: 1, height: "auto" }}
-//                       exit={{ opacity: 0, height: 0 }}
-//                       transition={{ duration: 0.4 }}
-//                       className="overflow-hidden mt-6"
-//                     >
-//                       <div className="bg-white/5 p-5 rounded-xl border border-white/10 text-gray-200">
-//                         <p className="text-lg font-semibold">{art.artist}</p>
-//                         <p className="text-sm text-gray-400 italic">{art.location}</p>
-//                         <p className="mt-4 leading-relaxed">{art.description}</p>
-//                       </div>
-//                     </motion.div>
-//                   )}
-//                 </AnimatePresence>
-//               </div>
-//             </div>
-//           </motion.div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-
-// export default ArtShowcase;
-
-
-
-
-
-
-
-
-
-
-
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@heroui/react";
+import { motion } from "framer-motion";
 
 const artworks = [
   {
     artist: "Vincent van Gogh",
     title: "Starry Night",
     year: "1889",
-    location: "MoMA, New York",
     img: "/art-images/art-image1.jpg",
     description:
-      "One of the most recognized paintings in the world, capturing the swirling night sky over Saint-Rémy.",
-  },
-  {
-    artist: "Leonardo da Vinci",
-    title: "Mona Lisa",
-    year: "1503",
-    location: "Louvre, Paris",
-    img: "/art-images/art-image4.jpg",
-    description:
-      "Famous for her enigmatic smile, the Mona Lisa is a masterpiece of Renaissance portrait art.",
+      "A powerful interpretation of motion and emotion. The swirling skies and bold brush strokes create a sense of depth and movement rarely seen in traditional imagery.",
+    details: [
+      "Captures expressive motion and dramatic contrast",
+      "Enhances textures while preserving structure",
+      "Ideal for emotional and dynamic compositions",
+    ],
   },
   {
     artist: "Claude Monet",
     title: "Water Lilies",
     year: "1916",
-    location: "Musée de l'Orangerie, Paris",
     img: "/art-images/art-image2.jpg",
     description:
-      "Part of Monet’s large series, Water Lilies represents his fascination with light and nature.",
+      "Soft transitions of light and color define this style. It transforms images into calm, dreamlike scenes with subtle gradients and painterly textures.",
+    details: [
+      "Focus on light diffusion and reflections",
+      "Creates smooth and calming visual tones",
+      "Perfect for landscapes and nature imagery",
+    ],
   },
   {
     artist: "Edvard Munch",
     title: "The Scream",
     year: "1893",
-    location: "National Gallery, Oslo",
     img: "/art-images/art-image3.jpg",
     description:
-      "An iconic symbol of human anxiety and existential dread, painted with bold expressionist strokes.",
+      "An intense and expressive transformation that emphasizes distortion and emotional depth. Colors become more dramatic, and forms more abstract.",
+    details: [
+      "High contrast and bold color shifts",
+      "Adds emotional intensity to visuals",
+      "Great for dramatic and abstract outputs",
+    ],
   },
 ];
 
 const ArtShowcase = () => {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") setOpenIndex(null);
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
-
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20 space-y-16">
-      {artworks.map((art, index) => {
-        const isOpen = openIndex === index;
-        const reversed = index % 2 === 1;
+    <section className="w-full py-32 bg-[#050505] text-white">
 
-        return (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div
-              className={`flex flex-col md:flex-row ${
-                reversed ? "md:flex-row-reverse" : ""
-              } bg-gradient-to-br from-gray-900/60 to-black/70 rounded-3xl overflow-hidden border border-white/10 shadow-[0_10px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl`}
+      {/* HEADER */}
+      <div className="max-w-5xl mx-auto px-6 mb-24 text-center">
+        <h2 className="text-5xl md:text-6xl font-black tracking-tight">
+          Beyond <span className="italic font-light">Filters</span>
+        </h2>
+        <p className="text-gray-400 mt-6 max-w-2xl mx-auto leading-relaxed">
+          Each transformation is inspired by iconic artistic movements.
+          The model doesn’t just recolor images — it reinterprets them
+          through texture, structure, and stylistic depth.
+        </p>
+      </div>
+
+      {/* CONTENT */}
+      <div className="max-w-7xl mx-auto px-6 space-y-32">
+
+        {artworks.map((art, i) => {
+          const reverse = i % 2 !== 0;
+
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className={`flex flex-col md:flex-row items-center gap-16 ${
+                reverse ? "md:flex-row-reverse" : ""
+              }`}
             >
-              {/* Image Section */}
-              <motion.div
-                whileHover={{ scale: 1.02, rotateY: reversed ? -5 : 5 }}
-                transition={{ type: "spring", stiffness: 120, damping: 14 }}
-                className="md:w-1/2 flex items-center justify-center p-6 bg-gradient-to-b from-gray-950/80 to-black/60"
-              >
-                <div className="relative w-full max-w-lg aspect-[3/4] md:aspect-[4/3] rounded-2xl border border-white/10 overflow-hidden bg-white/5 shadow-2xl">
-                  <img
-                    src={art.img}
-                    alt={art.title}
-                    className="w-full h-full object-contain rounded-2xl select-none"
-                    draggable="false"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-                  <p className="absolute top-3 left-3 bg-white/10 px-3 py-1 rounded-full text-sm text-gray-200 border border-white/20 backdrop-blur-md">
-                    {art.year}
-                  </p>
-                </div>
-              </motion.div>
+              {/* IMAGE */}
+              <div className="relative flex-shrink-0">
 
-              {/* Info Section */}
-              <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-md">
-                  {art.title}{" "}
-                  <span className="text-gray-400 text-xl font-light">
-                    ({art.year})
-                  </span>
-                </h2>
+                <img
+                  src={art.img}
+                  className={`
+                    ${i === 0 ? "w-[340px] h-[440px] rounded-[20%]" : ""}
+                    ${i === 1 ? "w-[420px] h-[260px] rounded-[40px]" : ""}
+                    ${i === 2 ? "w-[300px] h-[300px] rounded-full" : ""}
+                    object-cover border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.8)]
+                  `}
+                />
 
-                <div className="mt-6">
-                  <Button
-                    onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="bg-white/10 hover:bg-white/20 text-white rounded-full px-5 py-2 transition-all"
-                  >
-                    {isOpen ? "Hide details" : "View details"}
-                  </Button>
-                </div>
-
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.4 }}
-                      className="overflow-hidden mt-6"
-                    >
-                      <div className="bg-white/5 p-5 rounded-xl border border-white/10 text-gray-200">
-                        <p className="text-lg font-semibold">{art.artist}</p>
-                        <p className="text-sm text-gray-400 italic">
-                          {art.location}
-                        </p>
-                        <p className="mt-4 leading-relaxed">
-                          {art.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* label */}
+                {/* <div className="absolute bottom-4 left-4 bg-black/70 px-12 py-1 text-xs rounded-full border border-white/10">
+                  Arts
+                </div> */}
               </div>
-            </div>
-          </motion.div>
-        );
-      })}
-    </div>
+
+              {/* TEXT */}
+              <div className="max-w-lg">
+
+                <p className="text-xs text-gray-500 uppercase tracking-widest">
+                  {art.artist} • <span className="rounded-[5px] text-[#FFCF99] bg-[#0077B6] px-2">{art.year}</span>
+                </p>
+
+                <h3 className="mt-3 text-4xl md:text-5xl font-extrabold leading-tight">
+                  {art.title.split(" ")[0]}{" "}
+                  <span className="italic font-light">
+                    {art.title.split(" ").slice(1).join(" ")}
+                  </span>
+                </h3>
+
+                <p className="mt-6 text-gray-400 leading-relaxed">
+                  {art.description}
+                </p>
+
+                {/* DETAILS */}
+                <div className="mt-6 space-y-2 text-sm text-gray-300">
+                  {art.details.map((d, idx) => (
+                    <p key={idx}>• {d}</p>
+                  ))}
+                </div>
+
+                {/* EXTRA LINE */}
+                <p className="mt-6 text-gray-500 text-sm leading-relaxed">
+                  This style demonstrates how AI can reinterpret visual
+                  elements while maintaining the integrity of the original
+                  composition.
+                </p>
+
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 

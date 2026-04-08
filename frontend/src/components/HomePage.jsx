@@ -4,7 +4,8 @@ import ArtShowcase from "./ArtShowcase";
 
 const HomePage = () => {
   return (
-    <main className="bg-black text-white">
+    // <main className="bg-black text-white">
+      <main className="bg-[#050505] text-white">
       {/* Hero Section */}
       <HeroSection />
 

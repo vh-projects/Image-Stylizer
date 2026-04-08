@@ -1,257 +1,449 @@
+// StylizePage.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const StylizePage = () => {
   const [file, setFile] = useState(null);
-  const [category, setCategory] = useState("");
-  const [style, setStyle] = useState("");
-  const [stylesData, setStylesData] = useState({});
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [styleOptions, setStyleOptions] = useState([]);
   const [stylizedImg, setStylizedImg] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- 
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState("");
+
+  // 🔥 Generate descriptions based on category + style
+  const generateDescription = (category, style) => {
+    const descriptions = {
+      "human-face": {
+        "van-gogh":
+          "Enhances facial features with bold brush strokes and deep emotional contrast, creating a dramatic portrait-like effect.",
+        "claude-monet":
+          "Softens skin tones with gentle lighting and pastel hues, giving a calm, impressionist portrait feel.",
+      },
+
+      cars: {
+        "van-gogh":
+          "Transforms vehicles with dynamic strokes and vivid colors, adding energy and motion to metallic surfaces.",
+        "claude-monet":
+          "Applies soft reflections and diffused lighting, creating a dreamy, atmospheric automotive scene.",
+      },
+
+      cats: {
+        "van-gogh":
+          "Adds rich texture to fur with expressive strokes, highlighting depth and intensity in feline features.",
+        "claude-monet":
+          "Blends soft tones and light, giving cats a calm, painterly and serene appearance.",
+      },
+
+      dogs: {
+        "van-gogh":
+          "Emphasizes fur texture and expression with bold strokes, giving dogs a lively and emotional character.",
+        "claude-monet":
+          "Smoothens details with gentle light and color blending, creating a warm and peaceful visual tone.",
+      },
+
+      landscape: {
+        "van-gogh":
+          "Enhances scenery with dramatic skies and swirling textures, bringing energy and movement to landscapes.",
+        "claude-monet":
+          "Applies soft light and natural color blending, creating a tranquil and impressionist landscape effect.",
+      },
+    };
+
+    return (
+      descriptions[category]?.[style] ||
+      "AI-powered artistic transformation tailored for this style."
+    );
+  };
 
 
-  // Fetch available categories/styles from backend
+  const generateShortLabel = (category, style) => {
+    const styleMap = {
+      "van-gogh": "VG",
+      "claude-monet": "CM",
+    };
+
+    const categoryMap = {
+      "human-face": "H-F",
+      "cars": "C",
+      "cats": "CT",
+      "dogs": "D",
+      "landscape": "L",
+    };
+
+    return `${styleMap[style] || style} ${categoryMap[category] || category}`;
+  };
+
+  const simulateProgress = () => {
+    let value = 0;
+
+    const stages = [
+      { at: 15, text: "Uploading image..." },
+      { at: 35, text: "Loading AI model..." },
+      { at: 65, text: "Applying style..." },
+      { at: 90, text: "Refining details..." },
+    ];
+
+    const interval = setInterval(() => {
+      value += Math.random() * 4;
+
+      const current = stages.find((s) => value < s.at);
+      if (current) setStage(current.text);
+
+      if (value >= 95) value = 95;
+
+      setProgress(Math.floor(value));
+    }, 500);
+
+    return interval;
+  };
+
+  // 🔥 Fetch + flatten backend JSON
   useEffect(() => {
     const fetchStyles = async () => {
       try {
         const res = await axios.get(`${API_BASE}/api/styles`);
-        setStylesData(res.data);
+        const data = res.data;
 
-        // Auto-select first category & style
-        const firstCategory = Object.keys(res.data)[0];
-        setCategory(firstCategory || "");
-        if (firstCategory) {
-          const firstStyle = Object.keys(res.data[firstCategory])[0];
-          setStyle(firstStyle || "");
-        }
+        const flattened = [];
+
+        Object.keys(data).forEach((category) => {
+          Object.keys(data[category]).forEach((style) => {
+            flattened.push({
+              id: `${category}-${style}`,
+              category,
+              style,
+              // label: `${style.replace("-", " ")} (${category})`,
+              label: generateShortLabel(category, style),
+              description: generateDescription(category, style),
+            });
+          });
+        });
+
+        setStyleOptions(flattened);
+        setSelectedStyle(flattened[0]);
       } catch (err) {
-        console.error("Error fetching styles:", err);
-        setError("Failed to fetch available styles from server.");
+        setError("Failed to load styles.");
       }
     };
+
     fetchStyles();
   }, []);
 
+  // Upload
+  // const handleUpload = async () => {
+  //   if (!file || !selectedStyle) return;
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("category", selectedStyle.category);
+  //   formData.append("style", selectedStyle.style);
+
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     const res = await axios.post(`${API_BASE}/api/stylize`, formData);
+  //     setStylizedImg(res.data.image_url);
+  //   } catch (err) {
+  //     setError("Model not available or error occurred.");
+  //   }
+
+  //   setLoading(false);
+  // };
 
 
-const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!file || !category || !style) return;
+  const handleUpload = async () => {
+    if (!file || !selectedStyle) return;
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("category", category);
-    formData.append("style", style);
+    formData.append("category", selectedStyle.category);
+    formData.append("style", selectedStyle.style);
 
     setLoading(true);
-    setError(""); // reset error
+    setStylizedImg(null);
+    setError("");
+
+    setProgress(0);
+    setStage("Starting...");
+
+    const interval = simulateProgress();
 
     try {
-      const res = await axios.post(`${API_BASE}/api/stylize`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      // setStylizedImg(`${API_BASE}${res.data.image_url}`);
-      setStylizedImg(res.data.image_url);
-    } 
+      const res = await axios.post(`${API_BASE}/api/stylize`, formData);
 
-    catch (err) {
-      console.error(err);
-      if (err.response?.status === 400 || err.response?.status === 404) {
-        setError("Sorry. Model for this style is not available yet.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
+      clearInterval(interval);
+      setProgress(100);
+      setStage("Finalizing...");
+
+      setTimeout(() => {
+        setStylizedImg(res.data.image_url);
+        setLoading(false);
+      }, 800);
+    } catch (err) {
+      clearInterval(interval);
+      setLoading(false);
+      setError("Something went wrong.");
     }
+  };
 
-    setLoading(false);
+
+  // Download image
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(stylizedImg);
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "stylized-image.jpg";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Download failed", err);
+    }
   };
 
 
 
-return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex flex-col items-center mt-1.9 py-12 px-6">
-      {/* Page Heading */}
-      <h1 className="text-4xl font-bold mb-10 font-['Unbounded'] text-transparent bg-clip-text bg-gradient-to-r from-secondary-navy to-accent-red">
-        Stylize Your Image
-      </h1>
+  return (
+    <div className="min-h-screen bg-[#050505] text-white px-6 py-20">
 
-      {/* Error Message */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 px-4 py-3 rounded-lg bg-red-600/80 text-white font-medium shadow-lg"
-        >
-          {error}
-        </motion.div>
-      )}
+      {/* HEADER */}
+      <div className="max-w-5xl mx-auto text-center mt-5 mb-16">
 
-      {/* First Row: Upload + Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl mb-10">
-        {/* Upload Section */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gray-900/70 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg flex flex-col items-center"
-        >
-          <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
 
-          <label
-            htmlFor="file-upload"
-            className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-primary/80 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-gray-400 mb-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v9m0-9l-3 3m3-3l3 3M12 3v9"
-              />
-            </svg>
-            <p className="text-gray-400 text-sm">
-              Drag & drop or click to upload
-            </p>
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="hidden"
-            />
-          </label>
+        <h2 className="text-5xl md:text-6xl font-black tracking-tight"> Stylize{" "}
+          <span className="text-5xl mt-5 font-bold">Your </span>
+          <span className="italic font-light">Images </span>
+        </h2>
 
-          {file && (
-            <div className="mt-4 w-full flex flex-col items-center">
-              <img
-                src={URL.createObjectURL(file)}
-                alt="preview"
-                className="w-32 h-32 object-cover rounded-lg border border-white/10 shadow-md"
-              />
-              <p className="mt-2 text-gray-400 text-sm">{file.name}</p>
-            </div>
-          )}
-        </motion.div>
 
-        {/* Options Section */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gray-900/70 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg"
-        >
-          <h2 className="text-xl font-semibold mb-4">Choose Options</h2>
 
-          {/* Category Select */}
-          <label className="block mb-3">
-            <span className="text-gray-400 text-sm">Category</span>
-            <select
-              value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-                setStyle(""); // reset style when category changes
-              }}
-              className="mt-1 w-full p-2 rounded-lg bg-gray-800 border border-white/10 text-white focus:outline-none"
-            >
-              <option value="" disabled>
-                Select Category
-              </option>
-              {Object.keys(stylesData).map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {/* Style Select */}
-          <label className="block">
-            <span className="text-gray-400 text-sm">Style</span>
-            <select
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              className="mt-1 w-full p-2 rounded-lg bg-gray-800 border border-white/10 text-white focus:outline-none"
-              disabled={!category}
-            >
-              <option value="" disabled>
-                {category ? "Select Style" : "Select category first"}
-              </option>
-              {category &&
-                Object.keys(stylesData[category] || {}).map((st) => (
-                  <option key={st} value={st}>
-                    {st}
-                  </option>
-                ))}
-            </select>
-          </label>
-
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleUpload}
-              disabled={loading || !file}
-              className="mt-6 w-50 py-3 rounded-lg bg-gradient-to-r from-button-1 to-button-2 text-white font-semibold shadow-md hover:shadow-lg disabled:opacity-50"
-            >
-              {loading ? "Stylizing..." : "Stylize Image"}
-            </button>
-          </div>
-        </motion.div>
+        <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+          Choose a preset tailored for your image type. Each model is trained
+          specifically for different subjects to produce better results.
+        </p>
       </div>
 
-      {/* Second Row: Preview Section */}
-      <motion.div
-        whileHover={{ scale: 1.01 }}
-        className="w-full max-w-5xl bg-gray-900/70 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg"
-      >
-        <h2 className="text-xl font-semibold mb-4">Preview</h2>
+      {/* ERROR */}
+      {error && (
+        <div className="max-w-4xl mx-auto mb-6 bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-red-400">
+          {error}
+        </div>
+      )}
 
-        {!file && !stylizedImg && (
-          <p className="text-gray-400 text-sm">Upload an image to preview</p>
-        )}
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {file && (
-            <div>
-              <p className="text-sm text-gray-400 mb-1">Original</p>
-              <img
-                src={URL.createObjectURL(file)}
-                alt="Uploaded"
-                className="rounded-lg w-full object-cover border border-white/10"
+        {/* LEFT */}
+        <div className="space-y-8">
+
+          {/* UPLOAD */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h2 className="text-lg mb-3">Upload Image</h2>
+
+            <label className="flex items-center justify-center h-20 border border-dashed border-white/20 rounded-xl cursor-pointer hover:border-cyan-400 transition">
+              <p className="text-gray-400 text-sm">
+                Click or drag image here
+              </p>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="hidden"
               />
+            </label>
+          </div>
+
+          {/* STYLE PRESETS */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h2 className="text-lg mb-4">Choose Style</h2>
+
+            <div className="grid grid-cols-2 gap-3 max-h-[320px] overflow-y-auto pr-1">
+              {styleOptions.map((opt) => (
+                <div
+                  key={opt.id}
+                  onClick={() => setSelectedStyle(opt)}
+                  className={`p-3 rounded-xl border cursor-pointer transition ${selectedStyle?.id === opt.id
+                    ? "border-cyan-400 bg-cyan-500/10"
+                    : "border-white/10 hover:border-white/30"
+                    }`}
+                >
+                  <span className="text-sm px-[7px] rounded-[5px] bg-[#4381C1] font-medium capitalize">
+                    {opt.label}
+                  </span>
+                  <p className="text-xs text-gray-500">
+                    {opt.style.replace("-", " ")} • {opt.category}
+                  </p>
+
+                  <p className="text-xs text-gray-400 mt-1">
+                    {opt.description}
+                  </p>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+
+          {/* BUTTON */}
+          <button
+            onClick={handleUpload}
+            disabled={!file || loading}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:scale-[1.02] cursor-pointer transition disabled:opacity-50"
+          >
+            {loading ? "Processing..." : "Generate Image"}
+          </button>
+        </div>
+
+        {/* RIGHT */}
+        {/* <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+
+          <h2 className="text-lg mb-4">Preview</h2>
+
+          <div className="space-y-6">
+
+
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Original</p>
+              {file ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  className="rounded-xl w-full max-h-[250px] object-contain"
+                />
+              ) : (
+                <p className="text-gray-500 text-sm">No image uploaded</p>
+              )}
+            </div>
+
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Stylized</p>
+              {stylizedImg ? (
+                <motion.img
+                  src={stylizedImg}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="rounded-xl w-full max-h-[250px] object-contain"
+                />
+              ) : (
+                <p className="text-gray-500 text-sm">Not generated yet</p>
+              )}
+            </div>
+
+          </div>
+
 
           {stylizedImg && (
+            <button
+              onClick={handleDownload}
+              className="mt-6 w-full py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 cursor-pointer text-white hover:scale-[1.02]"
+            >
+              Download Image
+            </button>
+          )}
+
+        </div> */}
+
+
+
+
+
+
+        {/* RIGHT */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+
+          <h2 className="text-lg mb-4">Preview</h2>
+
+          <div className="space-y-6">
+
+            {/* ORIGINAL */}
             <div>
-              <p className="text-sm text-gray-400 mb-1">Stylized</p>
-              <img
-                src={stylizedImg}
-                alt="Stylized"
-                className="rounded-lg w-full object-cover border border-white/10"
-              />
-              <a
-                href={stylizedImg}
-                download
-                className="mt-3 inline-block px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium shadow hover:opacity-90"
-              >
-                Download Image
-              </a>
+              <p className="text-xs text-gray-500 mb-2">Original</p>
+              {file ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  className="rounded-xl w-full max-h-[250px] object-contain"
+                />
+              ) : (
+                <p className="text-gray-500 text-sm">No image uploaded</p>
+              )}
             </div>
+
+            {/* STYLIZED */}
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Stylized</p>
+
+              {/* 🔥 LOADING STATE */}
+              {loading && (
+                <div className="space-y-4">
+
+                  {/* Animated placeholder */}
+                  <motion.div
+                    className="w-full h-[200px] rounded-xl bg-white/5"
+                    animate={{ opacity: [0.3, 0.8, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+
+                  {/* Progress bar */}
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-cyan-500 to-blue-600"
+                      animate={{ width: `${progress}%` }}
+                    />
+                  </div>
+
+                  {/* Stage text */}
+                  <p className="text-sm text-gray-400 text-center">
+                    {stage} ({progress}%)
+                  </p>
+                </div>
+              )}
+
+              {/* 🔥 RESULT */}
+              {!loading && stylizedImg && (
+                <motion.img
+                  src={stylizedImg}
+                  initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  transition={{ duration: 0.8 }}
+                  className="rounded-xl w-full max-h-[250px] object-contain"
+                />
+              )}
+
+              {/* EMPTY */}
+              {!loading && !stylizedImg && (
+                <p className="text-gray-500 text-sm">Not generated yet</p>
+              )}
+            </div>
+
+          </div>
+
+          {/* DOWNLOAD */}
+          {stylizedImg && (
+            <button
+              onClick={handleDownload}
+              className="mt-6 w-full py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:scale-[1.02]"
+            >
+              Download Image
+            </button>
           )}
         </div>
-      </motion.div>
+
+
+
+
+      </div>
     </div>
   );
-
-
-  
 };
 
 export default StylizePage;

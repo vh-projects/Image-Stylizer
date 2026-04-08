@@ -1,169 +1,102 @@
-
-// // -------------------------------------------------- 2. -----------------------------------------------------------
-
-
-// "use client";
-
-// import { useState, useEffect } from "react";
-// import { motion, AnimatePresence } from "framer-motion";
-// import { Card } from "@heroui/react";
-
-// const images = [
-//   "/carousel-images/carousel-1.jpg",
-//   "/carousel-images/carousel-2.jpg",
-//   "/carousel-images/carousel-3.jpg",
-//   "/carousel-images/carousel-4.jpg",
-//   "/carousel-images/carousel-5.jpg",
-//   "/carousel-images/carousel-6.jpg",
-//   "/carousel-images/carousel-7.jpg",
-// ];
-
-// const ImageCarousel = () => {
-//   const [index, setIndex] = useState(0);
-
-//   const next = () => setIndex((prev) => (prev + 1) % images.length);
-//   const prev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
-
-//   // Auto-slide every 5s
-//   useEffect(() => {
-//     const interval = setInterval(next, 5000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   return (
-//     <div className="relative w-full max-w-5xl h-[450px] flex items-center justify-center overflow-hidden rounded-3xl bg-black/40 backdrop-blur-md">
-//       <AnimatePresence initial={false} mode="wait">
-//         <motion.div
-//           key={index}
-//           initial={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-//           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-//           exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-//           transition={{ duration: 1.2, ease: [0.45, 0, 0.55, 1] }}
-//           className="absolute w-full h-full"
-//         >
-//           <Card className="w-full h-full rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-//             <img
-//               src={images[index]}
-//               alt={`Slide ${index}`}
-//               className="w-full h-full object-cover object-center transition-transform duration-[4000ms] ease-linear hover:scale-105"
-//             />
-//           </Card>
-//         </motion.div>
-//       </AnimatePresence>
-
-//       {/* Overlay gradient for cinematic feel */}
-//       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
-
-//       {/* Controls */}
-//       <button
-//         onClick={prev}
-//         className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 backdrop-blur-lg rounded-full text-white text-3xl font-light hover:bg-white/20 transition"
-//       >
-//         ‹
-//       </button>
-//       <button
-//         onClick={next}
-//         className="absolute right-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 backdrop-blur-lg rounded-full text-white text-3xl font-light hover:bg-white/20 transition"
-//       >
-//         ›
-//       </button>
-
-//       {/* Indicator dots */}
-//       <div className="absolute bottom-6 flex gap-2">
-//         {images.map((_, i) => (
-//           <motion.div
-//             key={i}
-//             className={`w-2.5 h-2.5 rounded-full ${
-//               i === index ? "bg-white" : "bg-white/30"
-//             }`}
-//             animate={{ scale: i === index ? 1.4 : 1 }}
-//             transition={{ duration: 0.3 }}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ImageCarousel;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"use client";
-
-import { motion } from "framer-motion";
-import { Card } from "@heroui/react";
-
-const images = [
-  "/carousel-images/carousel-1.jpg",
-  "/carousel-images/carousel-2.jpg",
-  "/carousel-images/carousel-3.jpg",
-  "/carousel-images/carousel-4.jpg",
-  "/carousel-images/carousel-5.jpg",
-  "/carousel-images/carousel-6.jpg",
-  "/carousel-images/carousel-7.jpg",
-];
+import RadialCarousel from "./RadialCarousel";
 
 const ImageCarousel = () => {
   return (
-    <div className="relative w-full overflow-hidden bg-black/40 backdrop-blur-md rounded-3xl">
-      {/* Outer wrapper to clip content */}
-      <div className="flex items-center justify-center w-full h-[450px]">
-        {/* Motion container with infinite horizontal movement */}
-        <motion.div
-          className="flex gap-4"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{
-            duration: 25, // adjust speed here (lower = faster)
-            ease: "linear",
-            repeat: Infinity,
-          }}
-        >
-          {/* We duplicate the list twice to make the loop seamless */}
-          {[...images, ...images].map((img, idx) => (
-            <Card
-              key={idx}
-              className="min-w-[400px] h-[450px] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex-shrink-0"
-            >
-              <img
-                src={img}
-                alt={`Carousel ${idx}`}
-                className="w-full h-full object-cover object-center"
-              />
-            </Card>
-          ))}
-        </motion.div>
-      </div>
+    <section className="w-full py-7 bg-[#050505] text-white relative overflow-hidden">
 
-      {/* Overlay gradient for cinematic depth */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
-    </div>
+      {/* background glow */}
+      <div className="absolute w-[600px] h-[600px] bg-cyan-500/10 blur-[140px] top-[-200px] left-1/2 -translate-x-1/2" />
+
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-16 items-center">
+
+        {/* LEFT CONTENT */}
+        <div className="space-y-6 text-center md:text-left">
+
+          <p className="text-cyan-400 uppercase tracking-[0.25em] text-xs">
+            Creative AI
+          </p>
+
+          <h2 className="text-3xl md:text-4xl font-semibold leading-tight">
+            Transform Images Into{" "}
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
+              Artistic{" "} 
+            </span>
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text italic font-light text-transparent">
+              Expressions
+            </span>              
+              
+          </h2>
+
+  
+  
+          <p className="text-gray-400 leading-relaxed">
+            Our AI model analyzes your image and reinterprets it using
+            distinct artistic styles inspired by historical and modern
+            aesthetics.
+          </p>
+
+          {/* extra points */}
+          <ul className="space-y-3 text-gray-300 text-sm">
+            <li>• Style transfer powered by deep learning</li>
+            <li>• Preserves structure while enhancing creativity</li>
+            <li>• Works with portraits, landscapes, and more</li>
+          </ul>
+
+          <p className="text-gray-500 text-sm">
+            Built for creators who want fast, high-quality visual transformations.
+          </p>
+        </div>
+
+        {/* CENTER CAROUSEL */}
+        <div className="flex justify-center">
+          <RadialCarousel />
+        </div>
+
+        {/* RIGHT CONTENT */}
+        <div className="space-y-6 text-center md:text-right">
+
+          <p className="text-[#406E8E] uppercase tracking-[0.25em] text-xs">
+            Smart Styling
+          </p>
+
+          <h2 className="text-3xl md:text-4xl font-semibold leading-tight">
+            Multiple Styles.
+            <br />
+            <span className="bg-gradient-to-r from-[#4381C1] to-[#9AC2C9] text-transparent bg-clip-text">
+              One Input Image
+            </span>
+          </h2>
+
+          <p className="text-gray-400 leading-relaxed">
+            Generate multiple variations of the same image with different
+            artistic interpretations — instantly and effortlessly.
+          </p>
+
+          {/* feature blocks */}
+          <div className="space-y-4 text-sm text-gray-300">
+            <div>
+              <p className="text-white font-medium">Fast Processing</p>
+              <p className="text-gray-500">Results in seconds</p>
+            </div>
+
+            <div>
+              <p className="text-white font-medium">High Fidelity</p>
+              <p className="text-gray-500">Preserves key details</p>
+            </div>
+
+            <div>
+              <p className="text-white font-medium">Creative Control</p>
+              <p className="text-gray-500">Experiment with styles</p>
+            </div>
+          </div>
+
+          <p className="text-gray-500 text-sm">
+            Designed for both casual users and creative professionals.
+          </p>
+        </div>
+
+      </div>
+    </section>
   );
 };
 
