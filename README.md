@@ -18,9 +18,8 @@ Every model is trained from scratch on domain-matched datasets, so a Van Gogh mo
  
 | Style | Inspiration | Best For |
 |---|---|---|
-| Van Gogh | Post-impressionist — swirling strokes, bold color | Landscapes, portraits |
-| Claude Monet | Impressionist — soft light, loose brushwork | Landscapes, nature |
-| *(more styles)* | Domain-matched training | Humans, cars, cats/dogs |
+| Van Gogh | Post-impressionist — swirling strokes, bold color | Landscapes, Cats, Cars |
+| Claude Monet | Impressionist — soft light, loose brushwork | Landscapes, Cats, Dogs, Human |
  
 Each style model is trained on the dataset that best represents its subject matter: CelebA for human faces, Stanford Cars for vehicles, and dedicated landscape/animal datasets for scenic and nature styles.
  
